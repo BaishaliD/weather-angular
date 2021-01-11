@@ -1,0 +1,75 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+
+body{   
+    font-family: 'Poppins', sans-serif;
+    height: 100%;
+    width: 80%;
+    margin: auto;
+    margin-top: 40px;
+    background-image: url(../../assets/static/background_2.jpg);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: bottom left;
+    background-size: cover;
+    background-color: aliceblue;
+    /* opacity: 0.5; */
+    border-radius: 10px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    padding: 15px;
+}
+
+.container{
+    /* height: 100%; */
+    font-size: 1.2rem;
+}
+
+.row{
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+}
+.infoCard1{
+    background-color: #ffffff42;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px 0 rgb(0 0 0 / 35%), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    padding: 20px;
+    height: 350px;
+}
+
+.details{
+    justify-content: space-between;
+    padding: 0 15px;
+}
+
+.curr-temp{
+    font-size: 4rem;
+}
+
+.forecast-wrapper{
+    color: white;
+    width: 100%;
+    background-color: #0000008c;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px 0 rgb(0 0 0 / 35%), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-evenly;
+    margin-top: 15px;
+    padding: 20px;
+}
+
+.forecast-tile{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.graph-wrapper{
+    background-color: #0000008c;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px 0 rgb(0 0 0 / 35%), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    margin: 10px;
+    height: 350px;
+}
