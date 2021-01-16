@@ -17,20 +17,61 @@
                     </div>
                     <div style="text-align: right;">
                         <div>{{data.current.humidity}}</div>
-                        <div>{{data.current.rain}}</div>
-                        <div>{{data.current.pressure}}</div>
-                        <div>{{data.current.wind_speed}}</div>
+                        <div>{{data.current.rain}} mm</div>
+                        <div>{{data.current.pressure}} hPa</div>
+                        <div>{{data.current.wind_speed}} m/s</div>
                     </div>
                     <div></div>
                 </div>
             </div>
             <div class="col2">
                 <div class="heading">
-                    <div>Today</div>
-                    <div>Forecast</div>
+                    <div class="heading-tab" style="border-right: 1px solid rgba(255, 255, 255, 0.20);" (click)="tabChange('today')">Today</div>
+                    <div class="heading-tab" (click)="tabChange('forecast')">Forecast</div>
                 </div>
-                <div class="today"></div>
-                <div class="forecast"></div>
+                <div class="today" *ngIf="activeTab == 'today'">
+                    <div class="desc">
+                        <div class="desc-text">Now</div>
+                        <div class="desc-icon"><img style="height:50px;" src="./assets/static/{{data.current.weather.icon}}.png"></div>
+                    </div>
+                    <div>
+                        <div class="chart-info-wrapper">
+                            <div class="chart-info" style="font-weight: 700;">
+                                <div *ngFor="let time of data.hourly.time.slice().reverse()">
+                                    {{time}}
+                                </div>
+                            </div>
+                            <div class="chart-info">
+                                <div *ngFor="let temp of data.hourly.temp.slice().reverse()">
+                                    {{temp}}&deg;C
+                                </div>
+                            </div>
+                        </div>
+                        <div class="chart">
+                            <canvas id="chart" baseChart
+                                [datasets]="lineChartData"
+                                [labels]="lineChartLabels"
+                                [options]="lineChartOptions"
+                                [colors]="lineChartColors"                      
+                                [chartType]="lineChartType"
+                                [plugins]="plugin">
+                            </canvas>
+                        </div>
+                    </div>                                        
+                </div>
+                <div class="forecast" *ngIf="activeTab == 'forecast'">
+                    <div class="forecast-tile" *ngFor="let item of data.daily">
+                        <div style="font-weight: 300;">
+                            {{item.date}}
+                        </div>
+                        <div style="font-weight: 100;">
+                            {{item.temp.max}}&deg; / {{item.temp.min}}&deg;
+                        </div>
+                        <div style="padding: 15px 0;">
+                            <img src="./assets/static/{{item.weather.icon}}.png" height="49px">
+                        </div>  
+                    </div>
+                </div>
             </div>
     </div>
     <!-- <div class="container" *ngIf="data">

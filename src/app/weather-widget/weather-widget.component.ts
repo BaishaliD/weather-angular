@@ -72,6 +72,7 @@ export class WeatherWidgetComponent implements OnInit {
   lineChartLegend = false;
   lineChartType = 'line';
   plugin: any[];
+  activeTab = 'today';
 
   constructor(private weatherService: WeatherService) {}
 
@@ -168,6 +169,7 @@ export class WeatherWidgetComponent implements OnInit {
 
     this.lineChartOptions = {
       responsive: true,
+      maintainAspectRatio: false,
       legend: {
         display: false,
       },
@@ -176,20 +178,21 @@ export class WeatherWidgetComponent implements OnInit {
         xAxes: [
           {
             ticks: {
+              display: false,
               fontColor: 'white',
               autoSkip: true,
-              maxRotation: 0,
+              maxRotation: 0
             },
-            gridLines: { display: false },
+            gridLines: { display: false }
           },
         ],
         yAxes: [
           {
             ticks: {
               display: false,
-              suggestedMax: hourlyTemp[hourlyTemp.length - 1] + 10,
+              suggestedMax: hourlyTemp[hourlyTemp.length - 1] + 35
             },
-            gridLines: { display: false },
+            gridLines: { display: false }
           },
         ],
       },
@@ -202,9 +205,17 @@ export class WeatherWidgetComponent implements OnInit {
           var dataset = data.hourly.temp;
 
           for (let i = 0; i < dataset.length; i++) {
-            let xPos = chart.getDatasetMeta(0).data[i]._model.x - 10;
-            let yPos = chart.getDatasetMeta(0).data[i]._model.y - 10;
-            ctx.fillText(dataset[i] + '\u00B0', xPos, yPos);
+            // let xPos = chart.getDatasetMeta(0).data[i]._model.x - 10;
+            // let yPos = chart.getDatasetMeta(0).data[i]._model.y - 10;
+            // ctx.fillText(dataset[i] + '\u00B0', xPos, yPos);
+            let yMax = hourlyTemp[hourlyTemp.length - 1] + 35;
+            let xPos = chart.getDatasetMeta(0).data[i]._model.x;
+            let yPos = chart.getDatasetMeta(0).data[i]._model.y;
+            ctx.beginPath();
+            ctx.moveTo(xPos, yPos);
+            ctx.lineTo(xPos, yMax);
+            ctx.strokeStyle = 'rgba(255,255,255,0.2)';
+            ctx.stroke();
           }
         },
       },
@@ -213,13 +224,15 @@ export class WeatherWidgetComponent implements OnInit {
 
     // *ngIf="data.hourly.temp.length>0 && data.hourly.time.length>0"
 
-    var gradient = canvas.getContext('2d').createLinearGradient(0, 0, 0, 120);
+    var gradient = canvas.getContext('2d').createLinearGradient(0, 0, 0, 400);
     gradient.addColorStop(0, 'white');
     gradient.addColorStop(1, 'rgba(0,0,0,0.5)');
     this.lineChartColors = [
       {
-        borderColor: gradient,
-        backgroundColor: gradient
+        // borderColor: gradient,
+        // backgroundColor: gradient,
+        borderColor: 'white',
+        pointRadius: 0
       }
     ];
     this.lineChartLegend = false;
@@ -256,5 +269,14 @@ export class WeatherWidgetComponent implements OnInit {
 
   showPositionError(err) {
     console.warn(`ERROR(${err.code}): ${err.message}`);
+  }
+
+  tabChange(tab){
+    console.log("Tab clicked : ",tab);
+    if(tab=='today'){
+      this.activeTab = 'today'
+    }else{
+      this.activeTab = 'forecast'
+    }
   }
 }
