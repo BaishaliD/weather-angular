@@ -1,8 +1,42 @@
 <body>
-    <div class="container" *ngIf="data">
+    <div class="main-wrapper" *ngIf="data">
+            <div class="col1">
+                <div class="info-wrapper-top">
+                    <div class="info" style="font-size: 30px; line-height: 30px;">{{data.location}}</div>
+                    <div class="info" style="font-size: 20px; line-height: 20px;">{{data.dt}}</div>
+                    <div class="info" style="font-size: 100px; line-height: 100px;">{{data.current.temp}} &deg;C</div>
+                    <div class="info" style="font-size: 25px; line-height: 25px;">{{data.current.max}}&deg;C / {{data.current.min}}&deg;C</div>
+                    <div class="info" style="font-size: 20px; line-height: 20px;">Feels like {{data.current.feels_like}} &deg;C</div>
+                </div>
+                <div class="info-wrapper-bottom">
+                    <div style="flex-grow: 1;">
+                        <div>Humidity</div>
+                        <div>Precipitation</div>
+                        <div>Pressure</div>
+                        <div>Wind</div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div>{{data.current.humidity}}</div>
+                        <div>{{data.current.rain}}</div>
+                        <div>{{data.current.pressure}}</div>
+                        <div>{{data.current.wind_speed}}</div>
+                    </div>
+                    <div></div>
+                </div>
+            </div>
+            <div class="col2">
+                <div class="heading">
+                    <div>Today</div>
+                    <div>Forecast</div>
+                </div>
+                <div class="today"></div>
+                <div class="forecast"></div>
+            </div>
+    </div>
+    <!-- <div class="container" *ngIf="data">
         <div class="row row-1">
             <div class="infoCard1 col-lg-4">
-                <div class="row">
+                <div class="row location">
                     {{data.location}}
                 </div>
                 <div class="row">
@@ -15,36 +49,23 @@
                     Feels like {{data.current.feels_like}} &deg;C
                 </div>
                 <div class="row">
-                    <div class="col">
-                        <img src="{{data.current.weather.icon}}">
-                    </div>
-                    <div class="col" style="text-align: right;">
-                        {{data.current.weather.description | titlecase}}
-                    </div>
+                    <img src="./assets/static/{{data.current.weather.icon}}.png">
                 </div>
-                <div class="row details" >
-                    <span>Humidity</span>
-                    <span>{{data.current.humidity}}%</span>
-                </div>
-                <div class="row details" *ngIf="data.current.rain!=0">
-                    <span>Rain</span>
-                    <span>{{data.current.rain}}</span>
-                </div>
-                <div class="row details" *ngIf="data.current.snow!=0">
-                    <span>Snow</span>
-                    <span>{{data.current.snow}}</span>
+                <div class="row">
+                    {{data.current.weather.description | titlecase}}
                 </div>
             </div>
             <div class="col graph-wrapper">
                 <div style="height: 50%;">
                 </div>
-                <div style="height: 50%;" *ngIf="data.hourly.temp.length>0 && data.hourly.time.length>0">
-                    <canvas baseChart height="50" width="200" 
+                <div style="height: 50%;">
+                    <canvas id="chart" baseChart height="50" width="200" 
                       [datasets]="lineChartData"
                       [labels]="lineChartLabels"
                       [options]="lineChartOptions"
                       [colors]="lineChartColors"                      
-                      [chartType]="lineChartType">
+                      [chartType]="lineChartType"
+                      [plugins]="plugin">
                     </canvas>
                   </div>
             </div>
@@ -55,21 +76,14 @@
                     {{item.date}}
                 </div>
                 <div style="padding: 15px 0;">
-                    <!-- <img src="{{item.weather.icon}}"> -->
                     <img src="./assets/static/{{item.weather.icon}}.png" height="50px">
                 </div>
-                <!-- <div>
-                    {{item.weather.main | titlecase}}
-                </div>   -->
                 <div style="font-size: 1rem">
                     {{item.temp.max}}&deg; / {{item.temp.min}}&deg;
                 </div>  
-                <!-- <div>
-                    {{item.temp.min}} &#8451;
-                </div>             -->
             </div>
         </div>
 
         
-    </div>
+    </div> -->
 </body>

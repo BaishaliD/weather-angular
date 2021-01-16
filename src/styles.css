@@ -4,11 +4,12 @@ body{
     /* display: flex;
     justify-content: center;
     align-items: center; */
-    background-image: url(./assets/static/background_2_blur.jpg);
+    /* background-image: url(./assets/static/landscape_bg.jpg);
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-position: center;
-    background-size: cover; 
+    background-size: cover;  */
+    background-color: black;
 }
 /* .layer{
     height: 100%;
