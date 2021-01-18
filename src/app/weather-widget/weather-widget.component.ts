@@ -30,6 +30,36 @@ export interface Color {
   hoverBorderWidth?: number;
 }
 
+export interface dataSchema{
+  location: string,
+  dt: any,
+  current: {
+    temp: number,
+    max: number,
+    min: number,
+    feels_like: number,
+    humidity: number,
+    rain: number,
+    snow: number,
+    wind_speed: number,
+    pressure: number,
+    sunrise: any,
+    sunset: any,
+    weather: {
+      id: number,
+      icon: string,
+      main: string,
+      description: string,
+    },
+  },
+  hourly: {
+    time: any[],
+    temp: any[],
+    weather: any[]
+  },
+  daily: any[],
+};
+
 
 @Component({
   selector: 'app-weather-widget',
@@ -38,7 +68,7 @@ export interface Color {
   providers: [WeatherService],
 })
 export class WeatherWidgetComponent implements OnInit {
-  data = {
+  data : dataSchema = {
     location: '',
     dt: '',
     current: {
@@ -51,6 +81,8 @@ export class WeatherWidgetComponent implements OnInit {
       snow: 0,
       wind_speed: 0,
       pressure: 0,
+      sunrise: '',
+      sunset: '',
       weather: {
         id: 0,
         icon: '',
@@ -61,10 +93,11 @@ export class WeatherWidgetComponent implements OnInit {
     hourly: {
       time: [],
       temp: [],
+      weather: []
     },
     daily: [],
   };
-
+  forecastData;
   lineChartData: ChartDataSets[];
   lineChartLabels: Label[];
   lineChartOptions: ChartOptions;
@@ -73,6 +106,8 @@ export class WeatherWidgetComponent implements OnInit {
   lineChartType = 'line';
   plugin: any[];
   activeTab = 'today';
+  displayForecastDetails = false;
+  selectedItem;
 
   constructor(private weatherService: WeatherService) {}
 
@@ -82,6 +117,7 @@ export class WeatherWidgetComponent implements OnInit {
         this.weatherService
           .getCurrentData(position.coords.latitude, position.coords.longitude)
           .subscribe((data) => {
+            console.log("THIS.DATA",this.data);
             this.data.location = data.name;
             this.data.dt = moment.unix(data.dt).format('h:mm a, dddd');
           });
@@ -94,26 +130,28 @@ export class WeatherWidgetComponent implements OnInit {
             this.data.current.humidity = data.current.humidity;
             this.data.current.wind_speed = data.current.wind_speed;
             this.data.current.pressure = data.current.pressure;
+            this.data.current.sunrise = moment.unix(data.current.sunrise).format('h:mm a');
+            this.data.current.sunset = moment.unix(data.current.sunset).format('h:mm a');;
 
-            // if(data.current.hasOwnProperty('rain')){
-            //   this.data.current.rain = data.current.rain["1h"]
-            // }
-            // if(data.current.hasOwnProperty('snow')){
-            //   this.data.current.snow = data.current.snow["1h"]
-            // }
+            if(data.current.hasOwnProperty('rain')){
+              this.data.current.rain = data.current.rain["1h"]
+            }
+            if(data.current.hasOwnProperty('snow')){
+              this.data.current.snow = data.current.snow["1h"]
+            }
 
             this.data.current.weather.id = data.current.weather[0].id;
             this.data.current.weather.icon = data.current.weather[0].icon.slice(0,-1);
             // this.data.current.weather.icon = `http://openweathermap.org/img/wn/${data.current.weather[0].icon}@2x.png`;
             this.data.current.weather.main = data.current.weather[0].main;
-            this.data.current.weather.description =
-              data.current.weather[0].description;
+            this.data.current.weather.description = data.current.weather[0].description;
 
             for (let i = 0; i < data.hourly.length; i += 3) {
               this.data.hourly.time.push(
                 moment.unix(data.hourly[i].dt).format('h:mm a')
               );
               this.data.hourly.temp.push(Math.round(data.hourly[i].temp));
+              this.data.hourly.weather.push(data.hourly[i].weather[0].main);
             }
 
             for (let i = 0; i < data.daily.length; i++) {
@@ -124,20 +162,36 @@ export class WeatherWidgetComponent implements OnInit {
                 this.data.current.max = Math.round(item.temp.max);
                 this.data.current.min = Math.round(item.temp.min);
               } else {
+                var rain=0, snow=0;
+                if(item.hasOwnProperty('rain')){
+                  rain = item.rain;
+                }
+                if(item.hasOwnProperty('snow')){
+                  snow = item.snow;
+                }
                 this.data.daily.push({
-                  date: moment.unix(item.dt).format('ddd'),
+                  day: moment.unix(item.dt).format('ddd'),
+                  date: moment.unix(item.dt).format('dddd, Do MMM, YYYY'),
                   temp: {
                     max: Math.round(item.temp.max),
                     min: Math.round(item.temp.min),
                   },
+                  humidity: item.humidity,
+                  pressure: item.pressure,
+                  wind_speed: item.wind_speed,
+                  rain: rain,
+                  snow: snow,
+                  sunrise: moment.unix(item.sunrise).format('h:mm a'),
+                  sunset: moment.unix(item.sunset).format('h:mm a'),
                   weather: {
                     id: item.weather[0].id,
                     main: item.weather[0].main,
                     description: item.weather[0].description,
-                    icon: item.weather[0].icon.slice(0, -1),
+                    icon: item.weather[0].icon.slice(0, -1)
                     // icon: `http://openweathermap.org/img/wn/${item.weather[0].icon}@2x.png`
                   },
                 });
+                console.log("RAIN SNNOW",rain,snow)
               }
             }
 
@@ -148,7 +202,7 @@ export class WeatherWidgetComponent implements OnInit {
         // console.log("DATA TO BE DISPLAYED",this.data);
         // // this.data = JSON.stringify(rawData);
 
-        this.renderChart();
+        // this.renderChart();
 
         // this.lineChartData = [{ data: this.data.hourly.temp }];
         // this.lineChartLabels = this.data.hourly.time;
@@ -162,8 +216,6 @@ export class WeatherWidgetComponent implements OnInit {
   renderChart() {
 
     var canvas = <HTMLCanvasElement>document.getElementById('chart');
-    var ctx = canvas.getContext('2d');
-
     var data = this.data;
     var hourlyTemp = data.hourly.temp;
 
@@ -200,6 +252,7 @@ export class WeatherWidgetComponent implements OnInit {
     this.plugin = [
       {
         afterRender(chart) {
+          var ctx = canvas.getContext('2d');
           ctx.font = '12px Arial';
           ctx.fillStyle = 'white';
           var dataset = data.hourly.temp;
@@ -224,9 +277,9 @@ export class WeatherWidgetComponent implements OnInit {
 
     // *ngIf="data.hourly.temp.length>0 && data.hourly.time.length>0"
 
-    var gradient = canvas.getContext('2d').createLinearGradient(0, 0, 0, 400);
-    gradient.addColorStop(0, 'white');
-    gradient.addColorStop(1, 'rgba(0,0,0,0.5)');
+    // var gradient = canvas.getContext('2d').createLinearGradient(0, 0, 0, 400);
+    // gradient.addColorStop(0, 'white');
+    // gradient.addColorStop(1, 'rgba(0,0,0,0.5)');
     this.lineChartColors = [
       {
         // borderColor: gradient,
@@ -242,13 +295,6 @@ export class WeatherWidgetComponent implements OnInit {
 
   }
 
-  // ngAfterViewInit(){
-  //   var c = <HTMLCanvasElement> document.getElementById("chart");
-  //   var ctx = c.getContext("2d");
-  //   ctx.font = "30px Arial";
-  //   ctx.fillText("Hello World",10,50);
-  // }
-
   showPosition(position) {
     console.log(
       'Latitude: ',
@@ -256,15 +302,6 @@ export class WeatherWidgetComponent implements OnInit {
       'Longitude: ',
       position.coords.longitude
     );
-
-    // console.log("woohoo2", this);
-    // ala();
-
-    // this.weatherService.getCurrentData(position.coords.latitude,position.coords.longitude)
-    //   .subscribe(data => {
-    //     this.data = data;
-    //     console.log("DATAAA", this.data);
-    //   });
   }
 
   showPositionError(err) {
@@ -274,9 +311,19 @@ export class WeatherWidgetComponent implements OnInit {
   tabChange(tab){
     console.log("Tab clicked : ",tab);
     if(tab=='today'){
-      this.activeTab = 'today'
+      this.activeTab = 'today';      
     }else{
       this.activeTab = 'forecast'
     }
+    this.displayForecastDetails = false;
+    this.selectedItem = null;
+  }
+
+  displayForecastData(item){
+    this.displayForecastDetails = true;
+    this.selectedItem = item;
+    console.log("FORECAST DATA", item);
+    this.forecastData = item;
+    console.log("FORECAST DATA", this.forecastData);
   }
 }

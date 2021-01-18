@@ -103,7 +103,7 @@
 .main-wrapper{
     font-family: 'Poppins', sans-serif;
     width: 900px;
-    height: 600px;
+    height: 650px;
     display: flex;
     margin-top: 100px;
     background-image: url('../../assets/static/bg.jpg');
@@ -117,7 +117,7 @@
 }
 
 .col1{
-    height: 600px;
+    height: 650px;
     padding: 40px;
     width: 60%;
     color: white;
@@ -128,7 +128,7 @@
 
 .col2{
     width: 40%;
-    height: 600px;
+    height: 650px;
     background-color: rgba(0, 0, 0, 0.56);
     color: white;
     position: relative;
@@ -150,6 +150,7 @@
 
 .info{
     padding: 5px 0;
+    line-height: 1em;
 }
 
 .heading{
@@ -166,7 +167,7 @@
 }
 
 .heading-tab:hover{
-    background-color: #ffbdff52;
+    background-color: #ffbdff3d;
 }
 
 .today{
@@ -180,7 +181,9 @@
 
 .desc-text{
     font-weight: 300;
-    line-height: 64px;
+    line-height: 50px;
+    padding: 10px;
+
 }
 
 .chart{
@@ -198,11 +201,12 @@
 }
 
 .chart-info-wrapper{
-    height: 420px;
-    margin-top: 50px;
+    height: 455px;
+    margin-top: 10px;
     display: flex;
     font-size: 12px;
     font-weight: 100;
+    justify-content: space-between;
 }
 
 .chart-info{
@@ -231,4 +235,24 @@
 .forecast-tile:hover{
     background-color: rgba(255,255,255,0.2);
     cursor: pointer;
+}
+
+.active{
+    background-color: rgba(255,255,255,0.2);
+}
+
+.footer{
+    font-size: 12px;
+    font-weight: 100;
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+}
+
+.footer a{
+    color: white;
+}
+
+.activeTab{
+    background-color: #ffbdff3d;
 }

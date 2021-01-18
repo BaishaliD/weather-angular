@@ -1,44 +1,83 @@
 <body>
     <div class="main-wrapper" *ngIf="data">
-            <div class="col1">
+            <div class="col1" *ngIf="!displayForecastDetails">
                 <div class="info-wrapper-top">
-                    <div class="info" style="font-size: 30px; line-height: 30px;">{{data.location}}</div>
-                    <div class="info" style="font-size: 20px; line-height: 20px;">{{data.dt}}</div>
-                    <div class="info" style="font-size: 100px; line-height: 100px;">{{data.current.temp}} &deg;C</div>
-                    <div class="info" style="font-size: 25px; line-height: 25px;">{{data.current.max}}&deg;C / {{data.current.min}}&deg;C</div>
-                    <div class="info" style="font-size: 20px; line-height: 20px;">Feels like {{data.current.feels_like}} &deg;C</div>
+                    <div class="info" style="font-size: 30px;">{{data.location}}</div>
+                    <div class="info" style="font-size: 20px;">{{data.dt}}</div>
+                    <div class="info" style="font-size: 100px;">{{data.current.temp}} &deg;C</div>
+                    <div class="info" style="font-size: 25px;">{{data.current.max}}&deg;C / {{data.current.min}}&deg;C</div>
+                    <div class="info" style="font-size: 20px;">Feels like {{data.current.feels_like}} &deg;C</div>
                 </div>
                 <div class="info-wrapper-bottom">
                     <div style="flex-grow: 1;">
                         <div>Humidity</div>
-                        <div>Precipitation</div>
+                        <div *ngIf="data.current.rain!=0">Rain (in last 1 hr)</div>
+                        <div *ngIf="data.current.snow!=0">Snow (in last 1 hr)</div>
                         <div>Pressure</div>
                         <div>Wind</div>
+                        <div>Sunrise</div>
+                        <div>Sunset</div>
                     </div>
                     <div style="text-align: right;">
-                        <div>{{data.current.humidity}}</div>
-                        <div>{{data.current.rain}} mm</div>
+                        <div>{{data.current.humidity}}%</div>
+                        <div *ngIf="data.current.rain!=0">{{data.current.rain}} mm</div>
+                        <div *ngIf="data.current.snow!=0">{{data.current.snow}} mm</div>
                         <div>{{data.current.pressure}} hPa</div>
                         <div>{{data.current.wind_speed}} m/s</div>
+                        <div>{{data.current.sunrise}}</div>
+                        <div>{{data.current.sunset}}</div>
                     </div>
                     <div></div>
                 </div>
             </div>
+
+            <div class="col1" *ngIf="displayForecastDetails && forecastData">
+                <div class="info-wrapper-top">
+                    <div class="info" style="font-size: 30px;">{{data.location}}</div>
+                    <div class="info" style="font-size: 20px;">{{forecastData.date}}</div>
+                    <div class="info" style="font-size: 65px; line-height: 75px;">{{forecastData.temp.max}}&deg;C / {{forecastData.temp.min}}&deg;C</div>
+                    <div class="info" style="font-size: 20px;">{{forecastData.weather.description | titlecase}}</div>
+                </div>
+                <div class="info-wrapper-bottom">
+                    <div style="flex-grow: 1;">
+                        <div>Humidity</div>
+                        <div *ngIf="forecastData.rain!=0">Rain</div>
+                        <div *ngIf="forecastData.snow!=0">Snow</div>
+                        <div>Pressure</div>
+                        <div>Wind</div>
+                        <div>Sunrise</div>
+                        <div>Sunset</div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div>{{forecastData.humidity}}%</div>
+                        <div *ngIf="forecastData.rain!=0">{{forecastData.rain}} mm</div>
+                        <div *ngIf="forecastData.snow!=0">{{forecastData.snow}} mm</div>
+                        <div>{{forecastData.pressure}} hPa</div>
+                        <div>{{forecastData.wind_speed}} m/s</div>
+                        <div>{{forecastData.sunrise}}</div>
+                        <div>{{forecastData.sunset}}</div>
+                    </div>
+                    <div></div>
+                </div>
+            </div>
+
+
             <div class="col2">
                 <div class="heading">
-                    <div class="heading-tab" style="border-right: 1px solid rgba(255, 255, 255, 0.20);" (click)="tabChange('today')">Today</div>
-                    <div class="heading-tab" (click)="tabChange('forecast')">Forecast</div>
+                    <div class="heading-tab" [ngClass]="{'activeTab': activeTab=='today'}" style="border-right: 1px solid rgba(255, 255, 255, 0.20);" (click)="tabChange('today')">Today</div>
+                    <div class="heading-tab" [ngClass]="{'activeTab': activeTab=='forecast'}" (click)="tabChange('forecast')">Forecast</div>
                 </div>
                 <div class="today" *ngIf="activeTab == 'today'">
                     <div class="desc">
-                        <div class="desc-text">Now</div>
+                        <div class="desc-text" style="flex-grow: 1;">Now</div>
+                        <div class="desc-text">{{data.current.weather.main | titlecase}}</div>
                         <div class="desc-icon"><img style="height:50px;" src="./assets/static/{{data.current.weather.icon}}.png"></div>
                     </div>
-                    <div>
+                    <div  *ngIf="data.hourly.time.length>0 && data.hourly.temp.length>0">
                         <div class="chart-info-wrapper">
                             <div class="chart-info" style="font-weight: 700;">
                                 <div *ngFor="let time of data.hourly.time.slice().reverse()">
-                                    {{time}}
+                                    {{time}} 
                                 </div>
                             </div>
                             <div class="chart-info">
@@ -46,8 +85,13 @@
                                     {{temp}}&deg;C
                                 </div>
                             </div>
+                            <div class="chart-info">
+                                <div *ngFor="let weather of data.hourly.weather.slice().reverse()">
+                                    {{weather | titlecase}}
+                                </div>
+                            </div>
                         </div>
-                        <div class="chart">
+                        <!-- <div class="chart">
                             <canvas id="chart" baseChart
                                 [datasets]="lineChartData"
                                 [labels]="lineChartLabels"
@@ -56,13 +100,13 @@
                                 [chartType]="lineChartType"
                                 [plugins]="plugin">
                             </canvas>
-                        </div>
+                        </div> -->
                     </div>                                        
                 </div>
                 <div class="forecast" *ngIf="activeTab == 'forecast'">
-                    <div class="forecast-tile" *ngFor="let item of data.daily">
+                    <div class="forecast-tile" *ngFor="let item of data.daily" [ngClass]="{'active': selectedItem == item}" (click)="displayForecastData(item)">
                         <div style="font-weight: 300;">
-                            {{item.date}}
+                            {{item.day}}
                         </div>
                         <div style="font-weight: 100;">
                             {{item.temp.max}}&deg; / {{item.temp.min}}&deg;
@@ -71,6 +115,9 @@
                             <img src="./assets/static/{{item.weather.icon}}.png" height="49px">
                         </div>  
                     </div>
+                </div>
+                <div class="footer">
+                    Data obtained from <a href="https://openweathermap.org/" target="_blank">OpenWeather</a>
                 </div>
             </div>
     </div>
