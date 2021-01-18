@@ -105,13 +105,12 @@
     width: 900px;
     height: 650px;
     display: flex;
-    margin-top: 100px;
     background-image: url('../../assets/static/bg.jpg');
     background-repeat: no-repeat;
-    background-attachment: fixed;
+    /* background-attachment: fixed; */
     background-position: center;
     background-size: cover;
-    background-color: black;
+    /* background-color: black; */
     border: 1px solid lightgray;
     box-sizing: content-box;
 }
@@ -255,4 +254,30 @@
 
 .activeTab{
     background-color: #ffbdff3d;
+}
+
+@media only screen and (max-width : 900px){
+    .main-wrapper{
+        width: 100vw;
+    }
+}
+
+@media only screen and (max-width : 768px){
+    .main-wrapper{
+        height: auto;
+        background-image: none;
+        flex-direction: column;
+        background-color: none;
+        /*background-size: auto;
+        background-position: 6% -554%;
+    background-attachment: fixed; */
+    }
+    .col1{
+        width: 100%;
+        height: auto;
+        margin-top: 330px;
+    }
+    .col2{
+        width: 100%;
+    }
 }

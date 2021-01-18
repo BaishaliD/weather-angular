@@ -8,3 +8,15 @@ app-root{
     justify-content: center;
     align-items: center;
 } */
+
+body{
+    min-height: 100vh;
+    position: relative;
+}
+
+app-weather-widget{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+}
