@@ -22,8 +22,9 @@ body{
 
 @media only screen and (max-width: 768px){
     body{
-        background-image: url(./assets/static/bg.jpg);
+        background-image: url(./assets/static/bg_new.jpg);
         background-repeat: no-repeat;
         background-attachment: fixed;
+        background-size: cover;
     }
 }
