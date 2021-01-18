@@ -1,5 +1,6 @@
 # WeatherApp
 
+### Hosted at https://baishalid.github.io/weather-angular/
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 10.1.2.
 
 ## Development server
