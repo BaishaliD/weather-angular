@@ -125,8 +125,8 @@ export class WeatherWidgetComponent implements OnInit {
         this.weatherService
           .getAllData(position.coords.latitude, position.coords.longitude)
           .subscribe((data) => {
-            this.data.current.temp = data.current.temp;
-            this.data.current.feels_like = data.current.feels_like;
+            this.data.current.temp = data.current.temp.toFixed(1);
+            this.data.current.feels_like = data.current.feels_like.toFixed(1);
             this.data.current.humidity = data.current.humidity;
             this.data.current.wind_speed = data.current.wind_speed;
             this.data.current.pressure = data.current.pressure;
